@@ -36,6 +36,7 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	admins := e.Group("admins")
 	admins.POST("/register", cl.AdminController.Register)
 	admins.POST("/login", cl.AdminController.Login)
+	admins.PUT("/update-seller/:id", cl.SellerController.Update, middleware.JWTWithConfig(cl.JWTMiddleware), RoleValidationAdmin())
 
 	// Users
 	users := e.Group("users")
@@ -47,9 +48,11 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	sellers := e.Group("sellers")
 	sellers.POST("/register", cl.SellerController.Register)
 	sellers.POST("/login", cl.SellerController.Login)
+	sellers.PUT("/update-shop/:id", cl.SellerController.Update, middleware.JWTWithConfig(cl.JWTMiddleware), RoleValidationSeller())
 
 	sellers.POST("/add-item", cl.ItemController.Create, middleware.JWTWithConfig(cl.JWTMiddleware), RoleValidationSeller())
 	sellers.PUT("/update-item/:id", cl.ItemController.Update, middleware.JWTWithConfig(cl.JWTMiddleware), RoleValidationSeller())
+
 	sellers.DELETE("/delete-item/:id", cl.ItemController.Delete, middleware.JWTWithConfig(cl.JWTMiddleware), RoleValidationSeller())
 	sellers.GET("/my-item", cl.ItemController.MyItemBySeller, middleware.JWTWithConfig(cl.JWTMiddleware), RoleValidationSeller())
 

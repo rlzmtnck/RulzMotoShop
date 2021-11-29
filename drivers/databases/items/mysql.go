@@ -51,12 +51,6 @@ func (rep *MysqlItemRepository) Update(sellID int, itID int, domain *items.Domai
 
 	itemUpdate := fromDomain(*domain)
 
-	find := rep.Conn.Where("id = ?", itID).First(&itemUpdate).Error
-
-	if find != nil {
-		return items.Domain{}, business.ErrNotFound
-	}
-
 	itemUpdate.ID = itID
 
 	result := rep.Conn.Where("seller_id = ?", sellID).Where("id = ?", itID).Updates(&itemUpdate)

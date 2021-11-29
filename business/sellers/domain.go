@@ -19,9 +19,13 @@ type Domain struct {
 type Service interface {
 	Register(domain *Domain) (Domain, error)
 	Login(email, password string) (Domain, error)
+	Update(sellID int, domain *Domain) (Domain, error)
+	SellerByID(id int) (Domain, error)
 }
 
 type Repository interface {
 	Register(domain *Domain) (Domain, error)
 	Login(email, password string) (Domain, error)
+	Update(sellID int, domain *Domain) (Domain, error)
+	SellerByID(id int) (Domain, error)
 }

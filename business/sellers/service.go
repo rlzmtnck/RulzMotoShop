@@ -61,3 +61,23 @@ func (serv *serviceSeller) Login(email, password string) (Domain, error) {
 
 	return result, nil
 }
+func (serv *serviceSeller) Update(sellID int, domain *Domain) (Domain, error) {
+
+	result, err := serv.sellerRepository.Update(sellID, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+func (serv *serviceSeller) SellerByID(id int) (Domain, error) {
+
+	result, err := serv.sellerRepository.SellerByID(id)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}

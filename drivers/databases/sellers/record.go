@@ -35,7 +35,20 @@ func toDomain(org Sellers) sellers.Domain {
 		UpdatedAt:    org.UpdatedAt,
 	}
 }
-
+func toDomainUpdate(upd Sellers) sellers.Domain {
+	return sellers.Domain{
+		ID:           upd.ID,
+		Username:     upd.Username,
+		Email:        upd.Email,
+		Password:     upd.Password,
+		Name:         upd.Name,
+		Shop_Name:    upd.Shop_Name,
+		Phone_Number: upd.Phone_Number,
+		Photo:        upd.Photo,
+		CreatedAt:    upd.CreatedAt,
+		UpdatedAt:    upd.UpdatedAt,
+	}
+}
 func fromDomain(domain sellers.Domain) Sellers {
 	return Sellers{
 		ID:           domain.ID,

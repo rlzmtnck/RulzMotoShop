@@ -64,8 +64,11 @@ func (ctrl *ItemController) Update(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	jwtGetID := middleware.GetUser(c)
-
+	getData, _ := ctrl.itemService.ItemByID(id)
 	result, err := ctrl.itemService.Update(jwtGetID.ID, id, updateReq.ToDomain())
+	result.ID = getData.ID
+	result.Name = getData.Name
+	result.Description = getData.Description
 
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)

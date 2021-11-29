@@ -2,10 +2,12 @@ package sellers
 
 import (
 	"net/http"
+
 	"rulzmotoshop/business/sellers"
 	"rulzmotoshop/controllers"
 	"rulzmotoshop/controllers/sellers/request"
 	"rulzmotoshop/controllers/sellers/response"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -51,4 +53,37 @@ func (ctrl *SellerController) Login(c echo.Context) error {
 	}
 
 	return controllers.NewSuccessResponse(c, response.FromDomainLogin(result))
+}
+func (ctrl *SellerController) Update(c echo.Context) error {
+
+	updateReq := request.Sellers{}
+
+	if err := c.Bind(&updateReq); err != nil {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	getData, _ := ctrl.sellerService.SellerByID(id)
+	result, err := ctrl.sellerService.Update(id, updateReq.ToDomain())
+	result.ID = getData.ID
+
+	result.Name = getData.Name
+
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return controllers.NewSuccessResponse(c, response.FromDomainUpdateSeller(result))
+
+}
+func (ctrl *SellerController) SellerByID(c echo.Context) error {
+
+	eventID, _ := strconv.Atoi(c.Param("id"))
+
+	result, err := ctrl.sellerService.SellerByID(eventID)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+	return controllers.NewSuccessResponse(c, response.FromDomainAllSeller(result))
 }
