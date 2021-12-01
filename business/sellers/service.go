@@ -63,6 +63,8 @@ func (serv *serviceSeller) Login(email, password string) (Domain, error) {
 }
 func (serv *serviceSeller) Update(sellID int, domain *Domain) (Domain, error) {
 
+	hashedPassword, err := encrypt.HashingPassword(domain.Password)
+	domain.Password = hashedPassword
 	result, err := serv.sellerRepository.Update(sellID, domain)
 
 	if err != nil {
@@ -77,6 +79,16 @@ func (serv *serviceSeller) SellerByID(id int) (Domain, error) {
 
 	if err != nil {
 		return Domain{}, err
+	}
+
+	return result, nil
+}
+func (serv *serviceSeller) Delete(id int) (string, error) {
+
+	result, err := serv.sellerRepository.Delete(id)
+
+	if err != nil {
+		return "", business.ErrNotFound
 	}
 
 	return result, nil

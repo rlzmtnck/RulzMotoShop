@@ -21,6 +21,7 @@ type Service interface {
 	Login(email, password string) (Domain, error)
 	Update(sellID int, domain *Domain) (Domain, error)
 	SellerByID(id int) (Domain, error)
+	Delete(id int) (string, error)
 }
 
 type Repository interface {
@@ -28,4 +29,5 @@ type Repository interface {
 	Login(email, password string) (Domain, error)
 	Update(sellID int, domain *Domain) (Domain, error)
 	SellerByID(id int) (Domain, error)
+	Delete(id int) (string, error)
 }

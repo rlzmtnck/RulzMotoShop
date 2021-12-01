@@ -65,7 +65,25 @@ func (rep *MysqlItemRepository) Update(sellID int, itID int, domain *items.Domai
 func (rep *MysqlItemRepository) Delete(orgID int, id int) (string, error) {
 	rec := Items{}
 
-	find := rep.Conn.Where("organizer_id = ?", orgID).Where("id = ?", id).First(&rec)
+	find := rep.Conn.Where("seller_id = ?", orgID).Where("id = ?", id).First(&rec)
+
+	if find.Error != nil {
+		return "", business.ErrUnathorized
+	}
+
+	err := rep.Conn.Delete(&rec, "id = ?", id).Error
+
+	if err != nil {
+		return "", business.ErrNotFound
+	}
+
+	return "Items has been delete", nil
+
+}
+func (rep *MysqlItemRepository) DeleteByAdmin(id int) (string, error) {
+	rec := Items{}
+
+	find := rep.Conn.Where("id = ?", id).First(&rec)
 
 	if find.Error != nil {
 		return "", business.ErrUnathorized

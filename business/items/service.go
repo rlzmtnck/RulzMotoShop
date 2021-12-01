@@ -57,6 +57,16 @@ func (serv *serviceItem) Delete(sellID int, id int) (string, error) {
 
 	return result, nil
 }
+func (serv *serviceItem) DeleteByAdmin(id int) (string, error) {
+
+	result, err := serv.itemRepository.DeleteByAdmin(id)
+
+	if err != nil {
+		return "", business.ErrNotFound
+	}
+
+	return result, nil
+}
 
 func (serv *serviceItem) MyItemBySeller(sellID int) ([]Domain, error) {
 

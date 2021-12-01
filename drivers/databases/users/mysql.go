@@ -39,3 +39,29 @@ func (rep *MysqlUserRepository) Login(email, password string) (users.Domain, err
 
 	return toDomain(user), nil
 }
+func (rep *MysqlUserRepository) Update(userID int, domain *users.Domain) (users.Domain, error) {
+
+	profileUpdate := fromDomain(*domain)
+
+	profileUpdate.ID = userID
+
+	result := rep.Conn.Where("id = ?", userID).Updates(&profileUpdate)
+
+	if result.Error != nil {
+		return users.Domain{}, business.ErrNotFound
+	}
+
+	return toDomainUpdate(profileUpdate), nil
+}
+func (rep *MysqlUserRepository) UserByID(id int) (users.Domain, error) {
+
+	var user Users
+
+	result := rep.Conn.Where("id = ?", id).First(&user)
+
+	if result.Error != nil {
+		return users.Domain{}, result.Error
+	}
+
+	return toDomain(user), nil
+}

@@ -12,6 +12,10 @@ type Domain struct {
 	Name         string
 	Dob          string
 	Phone_Number string
+	Address      string
+	City         string
+	Province     string
+	Post_code    int
 	Photo        string
 	Token        string
 	CreatedAt    time.Time
@@ -21,9 +25,13 @@ type Domain struct {
 type Service interface {
 	Register(domain *Domain) (Domain, error)
 	Login(email, password string) (Domain, error)
+	Update(userID int, domain *Domain) (Domain, error)
+	UserByID(id int) (Domain, error)
 }
 
 type Repository interface {
 	Register(domain *Domain) (Domain, error)
 	Login(email, password string) (Domain, error)
+	Update(userID int, domain *Domain) (Domain, error)
+	UserByID(id int) (Domain, error)
 }

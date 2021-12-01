@@ -9,6 +9,10 @@ import (
 	_userController "rulzmotoshop/controllers/users"
 	_userRepo "rulzmotoshop/drivers/databases/users"
 
+	_wishService "rulzmotoshop/business/wishlist"
+	_wishController "rulzmotoshop/controllers/wishlist"
+	_wishRepo "rulzmotoshop/drivers/databases/wishlist"
+
 	_sellerService "rulzmotoshop/business/sellers"
 	_sellerController "rulzmotoshop/controllers/sellers"
 	_sellerRepo "rulzmotoshop/drivers/databases/sellers"
@@ -17,16 +21,16 @@ import (
 	_itemController "rulzmotoshop/controllers/items"
 	_itemsRepo "rulzmotoshop/drivers/databases/items"
 
-	// _transService "yukevent/business/transactions"
-	// _transController "yukevent/controllers/transactions"
-	// _transRepo "yukevent/drivers/databases/transactions"
+	_transService "rulzmotoshop/business/transactions"
+	_transController "rulzmotoshop/controllers/transactions"
+	_transRepo "rulzmotoshop/drivers/databases/transactions"
 
 	_adminService "rulzmotoshop/business/admins"
 	_adminController "rulzmotoshop/controllers/admins"
 	_adminRepo "rulzmotoshop/drivers/databases/admins"
 
-	// _newsController "yukevent/controllers/news"
-	// _newsRepo "yukevent/drivers/databases/thirdparties/news"
+	_newsController "rulzmotoshop/controllers/news"
+	_newsRepo "rulzmotoshop/drivers/databases/thirdparty/news"
 
 	_dbDriver "rulzmotoshop/drivers/mysql"
 
@@ -56,8 +60,9 @@ func dbMigrate(db *gorm.DB) {
 		&_userRepo.Users{},
 		&_sellerRepo.Sellers{},
 		&_itemsRepo.Items{},
-		// &_transRepo.Transactions{},
+		&_transRepo.Transactions{},
 		&_adminRepo.Admins{},
+		&_wishRepo.Wishlist{},
 	)
 }
 
@@ -83,6 +88,10 @@ func main() {
 	userService := _userService.NewServiceUser(userRepo, 10, &configJWT)
 	userCtrl := _userController.NewControllerUser(userService)
 
+	wishRepo := _driverFactory.NewWishRepository(db)
+	wishService := _wishService.NewServiceWish(wishRepo)
+	wishCtrl := _wishController.NewControllerWish(wishService)
+
 	SellerRepo := _driverFactory.NewSellerRepository(db)
 	sellerrService := _sellerService.NewServiceSeller(SellerRepo, 10, &configJWT)
 	sellerCtrl := _sellerController.NewControllerSeller(sellerrService)
@@ -91,25 +100,26 @@ func main() {
 	itemService := _itemService.NewServiceItem(itemRepo)
 	itemCtrl := _itemController.NewControllerItem(itemService)
 
-	// transRepo := _driverFactory.NewTransRepository(db)
-	// transService := _transService.NewServiceTrans(transRepo)
-	// transCtrl := _transController.NewControllerEvent(transService)
+	transRepo := _driverFactory.NewTransRepository(db)
+	transService := _transService.NewServiceTrans(transRepo)
+	transCtrl := _transController.NewControllerItem(transService)
 
 	adminRepo := _driverFactory.NewAdminRepository(db)
 	adminService := _adminService.NewServiceAdmin(adminRepo, 10, &configJWT)
 	adminCtrl := _adminController.NewControllerAdmin(adminService)
 
-	// newsRepo := _newsRepo.NewNewsApi()
-	// newsCtrl := _newsController.NewNewsController(newsRepo)
+	newsRepo := _newsRepo.NewNewsApi()
+	newsCtrl := _newsController.NewNewsController(newsRepo)
 
 	routesInit := _routes.ControllerList{
 		JWTMiddleware:    configJWT.Init(),
 		UserController:   *userCtrl,
 		SellerController: *sellerCtrl,
 		ItemController:   *itemCtrl,
-		// TransController:     *transCtrl,
-		AdminController: *adminCtrl,
-		// NewsController:      *newsCtrl,
+		TransController:  *transCtrl,
+		AdminController:  *adminCtrl,
+		WishController:   *wishCtrl,
+		NewsController:   *newsCtrl,
 	}
 
 	routesInit.RouteRegister(e)

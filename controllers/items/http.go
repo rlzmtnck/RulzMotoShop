@@ -92,6 +92,19 @@ func (ctrl *ItemController) Delete(c echo.Context) error {
 	return controllers.NewSuccessResponse(c, result)
 
 }
+func (ctrl *ItemController) DeleteByAdmin(c echo.Context) error {
+
+	deletedId, _ := strconv.Atoi(c.Param("id"))
+
+	result, err := ctrl.itemService.DeleteByAdmin(deletedId)
+
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return controllers.NewSuccessResponse(c, result)
+
+}
 func (ctrl *ItemController) MyItemBySeller(c echo.Context) error {
 	orgzID := middleware.GetUser(c)
 

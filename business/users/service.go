@@ -57,3 +57,25 @@ func (serv *serviceUser) Login(email, password string) (Domain, error) {
 
 	return result, nil
 }
+func (serv *serviceUser) Update(userID int, domain *Domain) (Domain, error) {
+	hashedPassword, err := encrypt.HashingPassword(domain.Password)
+	domain.Password = hashedPassword
+
+	result, err := serv.userRepository.Update(userID, domain)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}
+func (serv *serviceUser) UserByID(id int) (Domain, error) {
+
+	result, err := serv.userRepository.UserByID(id)
+
+	if err != nil {
+		return Domain{}, err
+	}
+
+	return result, nil
+}

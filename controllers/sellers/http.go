@@ -79,11 +79,24 @@ func (ctrl *SellerController) Update(c echo.Context) error {
 }
 func (ctrl *SellerController) SellerByID(c echo.Context) error {
 
-	eventID, _ := strconv.Atoi(c.Param("id"))
+	itemID, _ := strconv.Atoi(c.Param("id"))
 
-	result, err := ctrl.sellerService.SellerByID(eventID)
+	result, err := ctrl.sellerService.SellerByID(itemID)
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, response.FromDomainAllSeller(result))
+}
+func (ctrl *SellerController) Delete(c echo.Context) error {
+
+	deletedId, _ := strconv.Atoi(c.Param("id"))
+
+	result, err := ctrl.sellerService.Delete(deletedId)
+
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
+	}
+
+	return controllers.NewSuccessResponse(c, result)
+
 }

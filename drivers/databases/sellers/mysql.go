@@ -66,3 +66,21 @@ func (rep *MysqlSellersRepository) SellerByID(id int) (sellers.Domain, error) {
 
 	return toDomain(seller), nil
 }
+func (rep *MysqlSellersRepository) Delete(id int) (string, error) {
+	rec := Sellers{}
+
+	find := rep.Conn.Where("id = ?", id).First(&rec)
+
+	if find.Error != nil {
+		return "", business.ErrUnathorized
+	}
+
+	err := rep.Conn.Delete(&rec, "id = ?", id).Error
+
+	if err != nil {
+		return "", business.ErrNotFound
+	}
+
+	return "Seller has been delete", nil
+
+}
